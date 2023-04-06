@@ -1,5 +1,6 @@
 import React from "react"
 import Dot from "./Dot"
+import { nanoid } from "nanoid"
 
 export default function Die(props) {
     const styles = {
@@ -13,7 +14,7 @@ export default function Die(props) {
         : i === 2 ? "third"
         : i === 3 ? "fourth"
         : i === 4 ? "fifth" : "sixth"
-        dotElements.push(<Dot class={nthDot} />)
+        dotElements.push(<Dot class={nthDot} key={nthDot} />)
     }
 
     const numberClass = props.value === 6 ? "six" 
@@ -24,6 +25,7 @@ export default function Die(props) {
 
     return (
         <div 
+            key={nanoid()}
             className={`die-face ${numberClass}`}
             style={styles}
             onClick={props.holdDice}

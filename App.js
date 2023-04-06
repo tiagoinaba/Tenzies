@@ -8,6 +8,7 @@ export default function App() {
     const [dice, setDice] = React.useState(allNewDice())
     const [tenzies, setTenzies] = React.useState(false)
     const [rolls, setRolls] = React.useState(0)
+    const [best, setBest] = React.useState(0)
     
     React.useEffect(() => {
         const allHeld = dice.every(die => die.isHeld)
@@ -17,6 +18,26 @@ export default function App() {
             setTenzies(true)
         }
     }, [dice])
+    
+    React.useEffect(() => {
+        if(localStorage.getItem("bestGame")) {
+            const currentBest = localStorage.getItem("bestGame")
+            setBest(currentBest)
+            if(tenzies) {
+                if(best === "N/A") {
+                    setBest(rolls)
+                    localStorage.setItem("bestGame", rolls)
+                } else {
+                    const isBest = rolls < best ? rolls : best
+                    setBest(isBest)
+                    localStorage.setItem("bestGame", isBest)
+                }
+            }
+        } else {
+            localStorage.setItem("bestGame", "N/A")
+            setBest(localStorage.getItem("bestGame"))
+        }
+    }, [tenzies])
 
     function generateNewDie() {
         return {
@@ -82,6 +103,7 @@ export default function App() {
                 {tenzies ? "New Game" : "Roll"}
             </button>
             <p>Roll count: {rolls}</p>
+            <p className="best">Best: {best}</p>
         </main>
     )
 }

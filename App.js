@@ -2,13 +2,22 @@ import React from "react"
 import Die from "./Die"
 import {nanoid} from "nanoid"
 import Confetti from "react-confetti"
+import { useStopwatch } from "react-timer-hook"
 
 export default function App() {
 
     const [dice, setDice] = React.useState(allNewDice())
     const [tenzies, setTenzies] = React.useState(false)
     const [rolls, setRolls] = React.useState(0)
-    const [best, setBest] = React.useState(0)
+    const [best, setBest] = React.useState({leastRolls: 0, bestTime: 0})
+    const {
+        seconds,
+        minutes,
+        isRunning,
+        start,
+        pause,
+        reset
+    } = useStopwatch({ autoStart: false })
     
     React.useEffect(() => {
         const allHeld = dice.every(die => die.isHeld)
@@ -20,22 +29,26 @@ export default function App() {
     }, [dice])
     
     React.useEffect(() => {
+        pause()
+        // sync localStorage with state
         if(localStorage.getItem("bestGame")) {
             const currentBest = localStorage.getItem("bestGame")
-            setBest(currentBest)
+            setBest(JSON.parse(currentBest))
             if(tenzies) {
-                if(best === "N/A") {
-                    setBest(rolls)
-                    localStorage.setItem("bestGame", rolls)
+                if(best.leastRolls === "N/A" && best.bestTime === "N/A") {
+                    const tempBest = {leastRolls: rolls, bestTime: minutes * 60 + seconds}
+                    setBest(tempBest)
+                    localStorage.setItem("bestGame", JSON.stringify(tempBest))
                 } else {
-                    const isBest = rolls < best ? rolls : best
-                    setBest(isBest)
-                    localStorage.setItem("bestGame", isBest)
+                    const leastRolls = rolls < best.leastRolls ? rolls : best.leastRolls
+                    const bestTime = minutes * 60 + seconds < best.bestTime ? minutes * 60 + seconds : best.bestTime
+                    setBest({leastRolls: leastRolls, bestTime, bestTime})
+                    localStorage.setItem("bestGame", JSON.stringify({leastRolls: leastRolls, bestTime, bestTime}))
                 }
             }
         } else {
-            localStorage.setItem("bestGame", "N/A")
-            setBest(localStorage.getItem("bestGame"))
+            localStorage.setItem("bestGame", JSON.stringify({leastRolls: "N/A", bestTime: "N/A"}))
+            setBest(JSON.parse(localStorage.getItem("bestGame")))
         }
     }, [tenzies])
 
@@ -57,6 +70,9 @@ export default function App() {
     
     function rollDice() {
         if(!tenzies) {
+            if(rolls === 0) {
+                start()
+            }
             setRolls(prevValue => prevValue + 1)
             setDice(oldDice => oldDice.map(die => {
                 return die.isHeld ? 
@@ -64,6 +80,7 @@ export default function App() {
                     generateNewDie()
             }))
         } else {
+            reset(0, false)
             setTenzies(false)
             setDice(allNewDice())
             setRolls(0)
@@ -83,7 +100,10 @@ export default function App() {
             key={die.id} 
             value={die.value} 
             isHeld={die.isHeld} 
-            holdDice={() => holdDice(die.id)}
+            holdDice={() => {
+                if(!isRunning) start()
+                holdDice(die.id)
+            }}
         />
     ))
     
@@ -96,6 +116,9 @@ export default function App() {
             <div className="dice-container">
                 {diceElements}
             </div>
+            <div>
+                <span>{minutes < 10 ? `0${minutes}` : minutes}</span>:<span>{seconds < 10 ? `0${seconds}` : seconds}</span>
+            </div>
             <button 
                 className="roll-dice" 
                 onClick={rollDice}
@@ -103,7 +126,8 @@ export default function App() {
                 {tenzies ? "New Game" : "Roll"}
             </button>
             <p>Roll count: {rolls}</p>
-            <p className="best">Best: {best}</p>
+            <p className="best">Least rolls: {best.leastRolls}</p>
+            <p className="best">Best time: {best.bestTime / 60 < 10 ? `0${Math.floor(best.bestTime / 60)}` : best.bestTime / 60}:{best.bestTime % 60 < 10 ? `0${Math.floor(best.bestTime % 60)}` : best.bestTime % 60}</p>
         </main>
     )
 }

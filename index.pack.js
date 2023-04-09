@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -264,9 +264,9 @@ process.umask = function() { return 0; };
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(15);
+  module.exports = __webpack_require__(16);
 } else {
-  module.exports = __webpack_require__(14);
+  module.exports = __webpack_require__(15);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
@@ -370,342 +370,6 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(19);
-} else {
-  module.exports = __webpack_require__(18);
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-exports.default = App;
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _Die = __webpack_require__(6);
-
-var _Die2 = _interopRequireDefault(_Die);
-
-var _nanoid = __webpack_require__(9);
-
-var _reactConfetti = __webpack_require__(11);
-
-var _reactConfetti2 = _interopRequireDefault(_reactConfetti);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function App() {
-    var _React$useState = _react2.default.useState(allNewDice()),
-        _React$useState2 = _slicedToArray(_React$useState, 2),
-        dice = _React$useState2[0],
-        setDice = _React$useState2[1];
-
-    var _React$useState3 = _react2.default.useState(false),
-        _React$useState4 = _slicedToArray(_React$useState3, 2),
-        tenzies = _React$useState4[0],
-        setTenzies = _React$useState4[1];
-
-    var _React$useState5 = _react2.default.useState(0),
-        _React$useState6 = _slicedToArray(_React$useState5, 2),
-        rolls = _React$useState6[0],
-        setRolls = _React$useState6[1];
-
-    var _React$useState7 = _react2.default.useState(0),
-        _React$useState8 = _slicedToArray(_React$useState7, 2),
-        best = _React$useState8[0],
-        setBest = _React$useState8[1];
-
-    _react2.default.useEffect(function () {
-        var allHeld = dice.every(function (die) {
-            return die.isHeld;
-        });
-        var firstValue = dice[0].value;
-        var allSameValue = dice.every(function (die) {
-            return die.value === firstValue;
-        });
-        if (allHeld && allSameValue) {
-            setTenzies(true);
-        }
-    }, [dice]);
-
-    _react2.default.useEffect(function () {
-        if (localStorage.getItem("bestGame")) {
-            var currentBest = localStorage.getItem("bestGame");
-            setBest(currentBest);
-            if (tenzies) {
-                if (best === "N/A") {
-                    setBest(rolls);
-                    localStorage.setItem("bestGame", rolls);
-                } else {
-                    var isBest = rolls < best ? rolls : best;
-                    setBest(isBest);
-                    localStorage.setItem("bestGame", isBest);
-                }
-            }
-        } else {
-            localStorage.setItem("bestGame", "N/A");
-            setBest(localStorage.getItem("bestGame"));
-        }
-    }, [tenzies]);
-
-    function generateNewDie() {
-        return {
-            value: Math.ceil(Math.random() * 6),
-            isHeld: false,
-            id: (0, _nanoid.nanoid)()
-        };
-    }
-
-    function allNewDice() {
-        var newDice = [];
-        for (var i = 0; i < 10; i++) {
-            newDice.push(generateNewDie());
-        }
-        return newDice;
-    }
-
-    function rollDice() {
-        if (!tenzies) {
-            setRolls(function (prevValue) {
-                return prevValue + 1;
-            });
-            setDice(function (oldDice) {
-                return oldDice.map(function (die) {
-                    return die.isHeld ? die : generateNewDie();
-                });
-            });
-        } else {
-            setTenzies(false);
-            setDice(allNewDice());
-            setRolls(0);
-        }
-    }
-
-    function _holdDice(id) {
-        setDice(function (oldDice) {
-            return oldDice.map(function (die) {
-                return die.id === id ? _extends({}, die, { isHeld: !die.isHeld }) : die;
-            });
-        });
-    }
-
-    var diceElements = dice.map(function (die) {
-        return _react2.default.createElement(_Die2.default, {
-            key: die.id,
-            value: die.value,
-            isHeld: die.isHeld,
-            holdDice: function holdDice() {
-                return _holdDice(die.id);
-            }
-        });
-    });
-
-    return _react2.default.createElement(
-        "main",
-        null,
-        tenzies && _react2.default.createElement(_reactConfetti2.default, null),
-        _react2.default.createElement(
-            "h1",
-            { className: "title" },
-            "Tenzies"
-        ),
-        _react2.default.createElement(
-            "p",
-            { className: "instructions" },
-            "Roll until all dice are the same. Click each die to freeze it at its current value between rolls."
-        ),
-        _react2.default.createElement(
-            "div",
-            { className: "dice-container" },
-            diceElements
-        ),
-        _react2.default.createElement(
-            "button",
-            {
-                className: "roll-dice",
-                onClick: rollDice
-            },
-            tenzies ? "New Game" : "Roll"
-        ),
-        _react2.default.createElement(
-            "p",
-            null,
-            "Roll count: ",
-            rolls
-        ),
-        _react2.default.createElement(
-            "p",
-            { className: "best" },
-            "Best: ",
-            best
-        )
-    );
-}
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-function checkDCE() {
-  /* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */
-  if (
-    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === 'undefined' ||
-    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== 'function'
-  ) {
-    return;
-  }
-  if (process.env.NODE_ENV !== 'production') {
-    // This branch is unreachable because this function is only called
-    // in production, but the condition is true only in development.
-    // Therefore if the branch is still here, dead code elimination wasn't
-    // properly applied.
-    // Don't change the message. React DevTools relies on it. Also make sure
-    // this message doesn't occur elsewhere in this function, or it will cause
-    // a false positive.
-    throw new Error('^_^');
-  }
-  try {
-    // Verify that the code above has been dead code eliminated (DCE'd).
-    __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(checkDCE);
-  } catch (err) {
-    // DevTools shouldn't crash React, no matter what.
-    // We should still report in case we break this code.
-    console.error(err);
-  }
-}
-
-if (process.env.NODE_ENV === 'production') {
-  // DCE check should happen before ReactDOM bundle executes so that
-  // DevTools can report bad minification during injection.
-  checkDCE();
-  module.exports = __webpack_require__(13);
-} else {
-  module.exports = __webpack_require__(12);
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = Die;
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _Dot = __webpack_require__(7);
-
-var _Dot2 = _interopRequireDefault(_Dot);
-
-var _nanoid = __webpack_require__(9);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function Die(props) {
-    var styles = {
-        backgroundColor: props.isHeld ? "#59E391" : "white"
-    };
-
-    var dotElements = [];
-    for (var i = 0; i < props.value; i++) {
-        var nthDot = i === 0 ? "first" : i === 1 ? "second" : i === 2 ? "third" : i === 3 ? "fourth" : i === 4 ? "fifth" : "sixth";
-        dotElements.push(_react2.default.createElement(_Dot2.default, { "class": nthDot, key: nthDot }));
-    }
-
-    var numberClass = props.value === 6 ? "six" : props.value === 5 ? "five" : props.value === 4 ? "four" : props.value === 3 ? "three" : props.value === 2 ? "two" : "one";
-
-    return _react2.default.createElement(
-        "div",
-        {
-            key: (0, _nanoid.nanoid)(),
-            className: "die-face " + numberClass,
-            style: styles,
-            onClick: props.holdDice
-        },
-        dotElements
-    );
-}
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = Dot;
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function Dot(props) {
-    return _react2.default.createElement("span", { className: "dot " + props.class });
-}
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = __webpack_require__(5);
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _App = __webpack_require__(4);
-
-var _App2 = _interopRequireDefault(_App);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_reactDom2.default.render(_react2.default.createElement(_App2.default, null), document.getElementById("root"));
-
-/***/ }),
-/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -824,6 +488,386 @@ let nanoid = (size = 21) => {
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+if (process.env.NODE_ENV === 'production') {
+  module.exports = __webpack_require__(20);
+} else {
+  module.exports = __webpack_require__(19);
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+exports.default = App;
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Die = __webpack_require__(7);
+
+var _Die2 = _interopRequireDefault(_Die);
+
+var _nanoid = __webpack_require__(3);
+
+var _reactConfetti = __webpack_require__(11);
+
+var _reactConfetti2 = _interopRequireDefault(_reactConfetti);
+
+var _reactTimerHook = __webpack_require__(14);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function App() {
+    var _React$useState = _react2.default.useState(allNewDice()),
+        _React$useState2 = _slicedToArray(_React$useState, 2),
+        dice = _React$useState2[0],
+        setDice = _React$useState2[1];
+
+    var _React$useState3 = _react2.default.useState(false),
+        _React$useState4 = _slicedToArray(_React$useState3, 2),
+        tenzies = _React$useState4[0],
+        setTenzies = _React$useState4[1];
+
+    var _React$useState5 = _react2.default.useState(0),
+        _React$useState6 = _slicedToArray(_React$useState5, 2),
+        rolls = _React$useState6[0],
+        setRolls = _React$useState6[1];
+
+    var _React$useState7 = _react2.default.useState({ leastRolls: 0, bestTime: 0 }),
+        _React$useState8 = _slicedToArray(_React$useState7, 2),
+        best = _React$useState8[0],
+        setBest = _React$useState8[1];
+
+    var _useStopwatch = (0, _reactTimerHook.useStopwatch)({ autoStart: false }),
+        seconds = _useStopwatch.seconds,
+        minutes = _useStopwatch.minutes,
+        isRunning = _useStopwatch.isRunning,
+        start = _useStopwatch.start,
+        pause = _useStopwatch.pause,
+        reset = _useStopwatch.reset;
+
+    _react2.default.useEffect(function () {
+        var allHeld = dice.every(function (die) {
+            return die.isHeld;
+        });
+        var firstValue = dice[0].value;
+        var allSameValue = dice.every(function (die) {
+            return die.value === firstValue;
+        });
+        if (allHeld && allSameValue) {
+            setTenzies(true);
+        }
+    }, [dice]);
+
+    _react2.default.useEffect(function () {
+        pause();
+        // sync localStorage with state
+        if (localStorage.getItem("bestGame")) {
+            var currentBest = localStorage.getItem("bestGame");
+            setBest(JSON.parse(currentBest));
+            if (tenzies) {
+                if (best.leastRolls === "N/A" && best.bestTime === "N/A") {
+                    var tempBest = { leastRolls: rolls, bestTime: minutes * 60 + seconds };
+                    setBest(tempBest);
+                    localStorage.setItem("bestGame", JSON.stringify(tempBest));
+                } else {
+                    var leastRolls = rolls < best.leastRolls ? rolls : best.leastRolls;
+                    var bestTime = minutes * 60 + seconds < best.bestTime ? minutes * 60 + seconds : best.bestTime;
+                    setBest(_defineProperty({ leastRolls: leastRolls, bestTime: bestTime }, "bestTime", bestTime));
+                    localStorage.setItem("bestGame", JSON.stringify(_defineProperty({ leastRolls: leastRolls, bestTime: bestTime }, "bestTime", bestTime)));
+                }
+            }
+        } else {
+            localStorage.setItem("bestGame", JSON.stringify({ leastRolls: "N/A", bestTime: "N/A" }));
+            setBest(JSON.parse(localStorage.getItem("bestGame")));
+        }
+    }, [tenzies]);
+
+    function generateNewDie() {
+        return {
+            value: Math.ceil(Math.random() * 6),
+            isHeld: false,
+            id: (0, _nanoid.nanoid)()
+        };
+    }
+
+    function allNewDice() {
+        var newDice = [];
+        for (var i = 0; i < 10; i++) {
+            newDice.push(generateNewDie());
+        }
+        return newDice;
+    }
+
+    function rollDice() {
+        if (!tenzies) {
+            if (rolls === 0) {
+                start();
+            }
+            setRolls(function (prevValue) {
+                return prevValue + 1;
+            });
+            setDice(function (oldDice) {
+                return oldDice.map(function (die) {
+                    return die.isHeld ? die : generateNewDie();
+                });
+            });
+        } else {
+            reset(0, false);
+            setTenzies(false);
+            setDice(allNewDice());
+            setRolls(0);
+        }
+    }
+
+    function _holdDice(id) {
+        setDice(function (oldDice) {
+            return oldDice.map(function (die) {
+                return die.id === id ? _extends({}, die, { isHeld: !die.isHeld }) : die;
+            });
+        });
+    }
+
+    var diceElements = dice.map(function (die) {
+        return _react2.default.createElement(_Die2.default, {
+            key: die.id,
+            value: die.value,
+            isHeld: die.isHeld,
+            holdDice: function holdDice() {
+                if (!isRunning) start();
+                _holdDice(die.id);
+            }
+        });
+    });
+
+    return _react2.default.createElement(
+        "main",
+        null,
+        tenzies && _react2.default.createElement(_reactConfetti2.default, null),
+        _react2.default.createElement(
+            "h1",
+            { className: "title" },
+            "Tenzies"
+        ),
+        _react2.default.createElement(
+            "p",
+            { className: "instructions" },
+            "Roll until all dice are the same. Click each die to freeze it at its current value between rolls."
+        ),
+        _react2.default.createElement(
+            "div",
+            { className: "dice-container" },
+            diceElements
+        ),
+        _react2.default.createElement(
+            "div",
+            null,
+            _react2.default.createElement(
+                "span",
+                null,
+                minutes < 10 ? "0" + minutes : minutes
+            ),
+            ":",
+            _react2.default.createElement(
+                "span",
+                null,
+                seconds < 10 ? "0" + seconds : seconds
+            )
+        ),
+        _react2.default.createElement(
+            "button",
+            {
+                className: "roll-dice",
+                onClick: rollDice
+            },
+            tenzies ? "New Game" : "Roll"
+        ),
+        _react2.default.createElement(
+            "p",
+            null,
+            "Roll count: ",
+            rolls
+        ),
+        _react2.default.createElement(
+            "p",
+            { className: "best" },
+            "Least rolls: ",
+            best.leastRolls
+        ),
+        _react2.default.createElement(
+            "p",
+            { className: "best" },
+            "Best time: ",
+            best.bestTime / 60 < 10 ? "0" + Math.floor(best.bestTime / 60) : best.bestTime / 60,
+            ":",
+            best.bestTime % 60 < 10 ? "0" + Math.floor(best.bestTime % 60) : best.bestTime % 60
+        )
+    );
+}
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+function checkDCE() {
+  /* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */
+  if (
+    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === 'undefined' ||
+    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== 'function'
+  ) {
+    return;
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    // This branch is unreachable because this function is only called
+    // in production, but the condition is true only in development.
+    // Therefore if the branch is still here, dead code elimination wasn't
+    // properly applied.
+    // Don't change the message. React DevTools relies on it. Also make sure
+    // this message doesn't occur elsewhere in this function, or it will cause
+    // a false positive.
+    throw new Error('^_^');
+  }
+  try {
+    // Verify that the code above has been dead code eliminated (DCE'd).
+    __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(checkDCE);
+  } catch (err) {
+    // DevTools shouldn't crash React, no matter what.
+    // We should still report in case we break this code.
+    console.error(err);
+  }
+}
+
+if (process.env.NODE_ENV === 'production') {
+  // DCE check should happen before ReactDOM bundle executes so that
+  // DevTools can report bad minification during injection.
+  checkDCE();
+  module.exports = __webpack_require__(13);
+} else {
+  module.exports = __webpack_require__(12);
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = Die;
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Dot = __webpack_require__(8);
+
+var _Dot2 = _interopRequireDefault(_Dot);
+
+var _nanoid = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Die(props) {
+    var styles = {
+        backgroundColor: props.isHeld ? "#59E391" : "white"
+    };
+
+    var dotElements = [];
+    for (var i = 0; i < props.value; i++) {
+        var nthDot = i === 0 ? "first" : i === 1 ? "second" : i === 2 ? "third" : i === 3 ? "fourth" : i === 4 ? "fifth" : "sixth";
+        dotElements.push(_react2.default.createElement(_Dot2.default, { "class": nthDot, key: nthDot }));
+    }
+
+    var numberClass = props.value === 6 ? "six" : props.value === 5 ? "five" : props.value === 4 ? "four" : props.value === 3 ? "three" : props.value === 2 ? "two" : "one";
+
+    return _react2.default.createElement(
+        "div",
+        {
+            key: (0, _nanoid.nanoid)(),
+            className: "die-face " + numberClass,
+            style: styles,
+            onClick: props.holdDice
+        },
+        dotElements
+    );
+}
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = Dot;
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Dot(props) {
+    return _react2.default.createElement("span", { className: "dot " + props.class });
+}
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _App = __webpack_require__(5);
+
+var _App2 = _interopRequireDefault(_App);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_reactDom2.default.render(_react2.default.createElement(_App2.default, null), document.getElementById("root"));
+
+/***/ }),
 /* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -866,8 +910,8 @@ if (process.env.NODE_ENV !== "production") {
 
 var React = __webpack_require__(1);
 var _assign = __webpack_require__(2);
-var Scheduler = __webpack_require__(3);
-var tracing = __webpack_require__(20);
+var Scheduler = __webpack_require__(4);
+var tracing = __webpack_require__(21);
 
 var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
 
@@ -27130,7 +27174,7 @@ exports.version = ReactVersion;
 /*
  Modernizr 3.0.0pre (Custom Build) | MIT
 */
-var aa=__webpack_require__(1),m=__webpack_require__(2),r=__webpack_require__(3);function y(a){for(var b="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=1;c<arguments.length;c++)b+="&args[]="+encodeURIComponent(arguments[c]);return"Minified React error #"+a+"; visit "+b+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}if(!aa)throw Error(y(227));var ba=new Set,ca={};function da(a,b){ea(a,b);ea(a+"Capture",b)}
+var aa=__webpack_require__(1),m=__webpack_require__(2),r=__webpack_require__(4);function y(a){for(var b="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=1;c<arguments.length;c++)b+="&args[]="+encodeURIComponent(arguments[c]);return"Minified React error #"+a+"; visit "+b+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}if(!aa)throw Error(y(227));var ba=new Set,ca={};function da(a,b){ea(a,b);ea(a+"Capture",b)}
 function ea(a,b){ca[a]=b;for(a=0;a<b.length;a++)ba.add(b[a])}
 var fa=!("undefined"===typeof window||"undefined"===typeof window.document||"undefined"===typeof window.document.createElement),ha=/^[:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$/,ia=Object.prototype.hasOwnProperty,
 ja={},ka={};function la(a){if(ia.call(ka,a))return!0;if(ia.call(ja,a))return!1;if(ha.test(a))return ka[a]=!0;ja[a]=!0;return!1}function ma(a,b,c,d){if(null!==c&&0===c.type)return!1;switch(typeof b){case "function":case "symbol":return!0;case "boolean":if(d)return!1;if(null!==c)return!c.acceptsBooleans;a=a.toLowerCase().slice(0,5);return"data-"!==a&&"aria-"!==a;default:return!1}}
@@ -27420,6 +27464,12 @@ exports.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!rk(c))throw Er
 
 /***/ }),
 /* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+!function(e,t){ true?module.exports=t(__webpack_require__(1)):"function"==typeof define&&define.amd?define(["react"],t):"object"==typeof exports?exports["react-timer-hook"]=t(require("react")):e["react-timer-hook"]=t(e.react)}("undefined"!=typeof self?self:this,function(e){return function(e){var t={};function r(n){if(t[n])return t[n].exports;var o=t[n]={i:n,l:!1,exports:{}};return e[n].call(o.exports,o,o.exports,r),o.l=!0,o.exports}return r.m=e,r.c=t,r.d=function(e,t,n){r.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:n})},r.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},r.t=function(e,t){if(1&t&&(e=r(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var n=Object.create(null);if(r.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var o in e)r.d(n,o,function(t){return e[t]}.bind(null,o));return n},r.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return r.d(t,"a",t),t},r.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},r.p="",r(r.s=3)}([function(t,r){t.exports=e},function(e,t,r){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.Validate=t.Time=void 0;var n=u(r(5)),o=u(r(6));function u(e){return e&&e.__esModule?e:{default:e}}t.Time=n.default,t.Validate=o.default},function(e,t,r){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.useInterval=void 0;var n=function(e){return e&&e.__esModule?e:{default:e}}(r(7));t.useInterval=n.default},function(e,t,r){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.useTime=t.useStopwatch=t.useTimer=void 0;var n=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var r=arguments[t];for(var n in r)Object.prototype.hasOwnProperty.call(r,n)&&(e[n]=r[n])}return e};t.default=function(e){if((0,o.useEffect)(function(){console.warn("react-timer-hook: default export useTimer is deprecated, use named exports { useTimer, useStopwatch, useTime } instead")},[]),e.expiryTimestamp){var t=(0,u.default)(e);return n({},t,{startTimer:t.start,stopTimer:t.pause,resetTimer:function(){}})}var r=(0,i.default)(e);return n({},r,{startTimer:r.start,stopTimer:r.pause,resetTimer:r.reset})};var o=r(0),u=c(r(4)),i=c(r(8)),a=c(r(9));function c(e){return e&&e.__esModule?e:{default:e}}t.useTimer=u.default,t.useStopwatch=i.default,t.useTime=a.default},function(e,t,r){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var r=arguments[t];for(var n in r)Object.prototype.hasOwnProperty.call(r,n)&&(e[n]=r[n])}return e},o=function(){return function(e,t){if(Array.isArray(e))return e;if(Symbol.iterator in Object(e))return function(e,t){var r=[],n=!0,o=!1,u=void 0;try{for(var i,a=e[Symbol.iterator]();!(n=(i=a.next()).done)&&(r.push(i.value),!t||r.length!==t);n=!0);}catch(e){o=!0,u=e}finally{try{!n&&a.return&&a.return()}finally{if(o)throw u}}return r}(e,t);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}();t.default=function(e){var t=e.expiryTimestamp,r=e.onExpire,s=e.autoStart,l=void 0===s||s,d=(0,u.useState)(t),m=o(d,2),v=m[0],p=m[1],y=(0,u.useState)(i.Time.getSecondsFromExpiry(v)),T=o(y,2),g=T[0],b=T[1],h=(0,u.useState)(l),S=o(h,2),w=S[0],O=S[1],j=(0,u.useState)(l),x=o(j,2),_=x[0],M=x[1],P=(0,u.useState)(f(v)),F=o(P,2),E=F[0],k=F[1];function I(e){var t=!(arguments.length>1&&void 0!==arguments[1])||arguments[1];k(f(e)),M(t),O(t),p(e),b(i.Time.getSecondsFromExpiry(e))}function D(){var e=new Date;e.setMilliseconds(e.getMilliseconds()+1e3*g),I(e)}return(0,a.useInterval)(function(){E!==c&&k(c);var e=i.Time.getSecondsFromExpiry(v);b(e),e<=0&&(i.Validate.onExpire(r)&&r(),O(!1),k(null))},w?E:null),n({},i.Time.getTimeFromSeconds(g),{start:function(){_?(b(i.Time.getSecondsFromExpiry(v)),O(!0)):D()},pause:function(){O(!1)},resume:D,restart:I,isRunning:w})};var u=r(0),i=r(1),a=r(2),c=1e3;function f(e){if(!i.Validate.expiryTimestamp(e))return null;var t=i.Time.getSecondsFromExpiry(e),r=Math.floor(1e3*(t-Math.floor(t)));return r>0?r:c}},function(e,t,r){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n=function(){function e(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(t,r,n){return r&&e(t.prototype,r),n&&e(t,n),t}}();var o=function(){function e(){!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,e)}return n(e,null,[{key:"getTimeFromSeconds",value:function(e){var t=Math.ceil(e),r=Math.floor(t/86400),n=Math.floor(t%86400/3600),o=Math.floor(t%3600/60);return{seconds:Math.floor(t%60),minutes:o,hours:n,days:r}}},{key:"getSecondsFromExpiry",value:function(e,t){var r=e-(new Date).getTime();if(r>0){var n=r/1e3;return t?Math.round(n):n}return 0}},{key:"getSecondsFromPrevTime",value:function(e,t){var r=(new Date).getTime()-e;if(r>0){var n=r/1e3;return t?Math.round(n):n}return 0}},{key:"getSecondsFromTimeNow",value:function(){var e=new Date;return e.getTime()/1e3-60*e.getTimezoneOffset()}},{key:"getFormattedTimeFromSeconds",value:function(t,r){var n=e.getTimeFromSeconds(t),o=n.seconds,u=n.minutes,i=n.hours,a="",c=i;return"12-hour"===r&&(a=i>=12?"pm":"am",c=i%12),{seconds:o,minutes:u,hours:c,ampm:a}}}]),e}();t.default=o},function(e,t,r){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n=function(){function e(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(t,r,n){return r&&e(t.prototype,r),n&&e(t,n),t}}();var o=function(){function e(){!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,e)}return n(e,null,[{key:"expiryTimestamp",value:function(e){var t=new Date(e).getTime()>0;return t||console.warn("react-timer-hook: { useTimer } Invalid expiryTimestamp settings",e),t}},{key:"onExpire",value:function(e){var t=e&&"function"==typeof e;return e&&!t&&console.warn("react-timer-hook: { useTimer } Invalid onExpire settings function",e),t}}]),e}();t.default=o},function(e,t,r){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default=function(e,t){var r=(0,n.useRef)();(0,n.useEffect)(function(){r.current=e}),(0,n.useEffect)(function(){if(!t)return function(){};var e=setInterval(function(){r.current&&r.current()},t);return function(){return clearInterval(e)}},[t])};var n=r(0)},function(e,t,r){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var r=arguments[t];for(var n in r)Object.prototype.hasOwnProperty.call(r,n)&&(e[n]=r[n])}return e},o=function(){return function(e,t){if(Array.isArray(e))return e;if(Symbol.iterator in Object(e))return function(e,t){var r=[],n=!0,o=!1,u=void 0;try{for(var i,a=e[Symbol.iterator]();!(n=(i=a.next()).done)&&(r.push(i.value),!t||r.length!==t);n=!0);}catch(e){o=!0,u=e}finally{try{!n&&a.return&&a.return()}finally{if(o)throw u}}return r}(e,t);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}();t.default=function(e){var t=e.autoStart,r=e.offsetTimestamp,c=(0,u.useState)(i.Time.getSecondsFromExpiry(r,!0)||0),f=o(c,2),s=f[0],l=f[1],d=(0,u.useState)(new Date),m=o(d,2),v=m[0],p=m[1],y=(0,u.useState)(s+i.Time.getSecondsFromPrevTime(v||0,!0)),T=o(y,2),g=T[0],b=T[1],h=(0,u.useState)(t),S=o(h,2),w=S[0],O=S[1];return(0,a.useInterval)(function(){b(s+i.Time.getSecondsFromPrevTime(v,!0))},w?1e3:null),n({},i.Time.getTimeFromSeconds(g),{start:function(){var e=new Date;p(e),O(!0),b(s+i.Time.getSecondsFromPrevTime(e,!0))},pause:function(){l(g),O(!1)},reset:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,t=!(arguments.length>1&&void 0!==arguments[1])||arguments[1],r=i.Time.getSecondsFromExpiry(e,!0)||0,n=new Date;p(n),l(r),O(t),b(r+i.Time.getSecondsFromPrevTime(n,!0))},isRunning:w})};var u=r(0),i=r(1),a=r(2)},function(e,t,r){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var r=arguments[t];for(var n in r)Object.prototype.hasOwnProperty.call(r,n)&&(e[n]=r[n])}return e},o=function(){return function(e,t){if(Array.isArray(e))return e;if(Symbol.iterator in Object(e))return function(e,t){var r=[],n=!0,o=!1,u=void 0;try{for(var i,a=e[Symbol.iterator]();!(n=(i=a.next()).done)&&(r.push(i.value),!t||r.length!==t);n=!0);}catch(e){o=!0,u=e}finally{try{!n&&a.return&&a.return()}finally{if(o)throw u}}return r}(e,t);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}();t.default=function(e){var t=e.format,r=(0,u.useState)(i.Time.getSecondsFromTimeNow()),c=o(r,2),f=c[0],s=c[1];return(0,a.useInterval)(function(){s(i.Time.getSecondsFromTimeNow())},1e3),n({},i.Time.getFormattedTimeFromSeconds(f,t))};var u=r(0),i=r(1),a=r(2)}])});
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29760,7 +29810,7 @@ exports.version = ReactVersion;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29790,7 +29840,7 @@ exports.useLayoutEffect=function(a,b){return S().useLayoutEffect(a,b)};exports.u
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30145,7 +30195,7 @@ exports.unstable_wrap = unstable_wrap;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30161,7 +30211,7 @@ var b=0;exports.__interactionsRef=null;exports.__subscriberRef=null;exports.unst
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30815,7 +30865,7 @@ exports.unstable_wrapCallback = unstable_wrapCallback;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30842,16 +30892,16 @@ exports.unstable_wrapCallback=function(a){var b=P;return function(){var c=P;P=b;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(17);
+  module.exports = __webpack_require__(18);
 } else {
-  module.exports = __webpack_require__(16);
+  module.exports = __webpack_require__(17);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
